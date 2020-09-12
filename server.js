@@ -18,37 +18,47 @@ mongoose.connect(DB_URL, {useNewUrlParser: true, useUnifiedTopology: true}, () =
 
 //middleware and static files
 app.use(express.static('public'))
+app.use(express.urlencoded({extended: true}))
 app.use(morgan('dev'))
 
 //listen for requests
 app.listen(3000)
 
-//mongoose and mongo sandbox routes
-app.get('/add-blog', (req, resp) => {
-  const blog = new Blog({
-    title: 'React js',
-    snippet: 'learn react js',
-    body:
-      'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos quaerat voluptatem ipsum quas! A aliquam iusto hic? Et, quisquam maxime? Dolorem, explicabo?',
-  })
-
-  blog
-    .save()
-    .then(data => resp.send(data))
+//@Routes
+app.get('/', (req, resp) => resp.redirect('/blogs'))
+app.get('/about', (req, resp) => resp.render('about', {title: 'About'}))
+app.get('/blogs/create', (req, resp) => resp.render('create', {title: 'Create new blog'}))
+app.get('/blogs', (req, resp) => {
+  Blog.find()
+    .sort({createdAt: -1})
+    .then(data => resp.render('index', {title: 'blogs', blogs: data}))
     .catch(err => console.log(err))
 })
 
-app.get('/', (req, resp) => {
-  resp.redirect('/blogs')
+//create post
+app.post('/blogs', (req, resp) => {
+  const blog = new Blog(req.body)
+  blog
+    .save()
+    .then(data => resp.redirect('/'))
+    .catch(err => console.log(err))
 })
 
-//blog route
-app.get('/blogs', (req, resp) => {
-  Blog.find().then(data => resp.render('index', {title: 'blogs', blogs: data}))
+//delete post
+app.delete('/blogs/:id', (req, resp) => {
+  const id = req.params.id
+  Blog.findByIdAndDelete(id)
+    .then(() => resp.json({redirect: '/blogs'}))
+    .catch(err => console.log(err))
 })
 
-app.get('/about', (req, resp) => resp.render('about', {title: 'About'}))
-//create
-app.get('/blogs/create', (req, resp) => resp.render('create', {title: ' Create new post'}))
+//single post
+app.get('/blogs/:id', (req, resp) => {
+  const id = req.params.id
+  Blog.findById(id)
+    .then(data => resp.render('details', {blog: data, title: 'blog details'}))
+    .catch(err => console.log(err))
+})
+
 //404 (must be last route)
 app.use((req, resp) => resp.status(404).render('404', {title: '404'}))
