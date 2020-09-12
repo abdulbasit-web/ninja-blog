@@ -11,7 +11,8 @@ app.set('view engine', 'ejs')
 
 //connect to mongoDb
 const DB_URL =
-  'mongodb+srv://abdulbasit:42591800@cluster0.bghf6.mongodb.net/ninja-blog?retryWrites=true&w=majority'mongoose.connect(DB_URL, {useNewUrlParser: true, useUnifiedTopology: true}, () => {
+  'mongodb+srv://abdulbasit:42591800@cluster0.bghf6.mongodb.net/ninja-blog?retryWrites=true&w=majority'
+mongoose.connect(DB_URL, {useNewUrlParser: true, useUnifiedTopology: true}, () => {
   console.log('connected')
 })
 
