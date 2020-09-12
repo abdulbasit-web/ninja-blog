@@ -1,7 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
-const Blog = require('./model/blog')
 const blogController = require('./controller/blogController')
 
 //express app

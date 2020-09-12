@@ -1,4 +1,3 @@
-//blog_index , blog_create_get , blog_create_post , blog_delete ,  blog_details
 const Blog = require('../model/blog')
 
 const blog_index = (req, resp) => {
