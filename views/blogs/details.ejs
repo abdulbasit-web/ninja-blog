@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include("./partials/head.ejs") %>
+  <%- include("../partials/head.ejs") %>
   <body>
-    <%- include("./partials/navbar.ejs") %>
+    <%- include("../partials/navbar.ejs") %>
 
     <div class="details content">
       <h2><%= blog.title %></h2>
       <div class="content">
         <p><%= blog.body %></p>
       </div>
-      <a class="delete" id="<%= blog._id %>">delete</a>
+      <a class="delete" id="<%= blog._id %>">
+        <img src="/trashcan.svg" alt="delete icon " />
+      </a>
     </div>
 
-    <%- include("./partials/footer.ejs") %>
+    <%- include("../partials/footer.ejs") %>
 
     <script>
       const deleteBtn = document.getElementById('<%= blog._id %>')

@@ -2,6 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const Blog = require('./model/blog')
+const blogController = require('./controller/blogController')
 
 //express app
 const app = express()
@@ -27,38 +28,16 @@ app.listen(3000)
 //@Routes
 app.get('/', (req, resp) => resp.redirect('/blogs'))
 app.get('/about', (req, resp) => resp.render('about', {title: 'About'}))
-app.get('/blogs/create', (req, resp) => resp.render('create', {title: 'Create new blog'}))
-app.get('/blogs', (req, resp) => {
-  Blog.find()
-    .sort({createdAt: -1})
-    .then(data => resp.render('index', {title: 'blogs', blogs: data}))
-    .catch(err => console.log(err))
-})
 
+//blog routes
+app.get('/blogs', blogController.blog_index)
+app.get('/blogs/create', blogController.blog_create_get)
 //create post
-app.post('/blogs', (req, resp) => {
-  const blog = new Blog(req.body)
-  blog
-    .save()
-    .then(data => resp.redirect('/'))
-    .catch(err => console.log(err))
-})
-
+app.post('/blogs', blogController.blog_create_post)
 //delete post
-app.delete('/blogs/:id', (req, resp) => {
-  const id = req.params.id
-  Blog.findByIdAndDelete(id)
-    .then(() => resp.json({redirect: '/blogs'}))
-    .catch(err => console.log(err))
-})
-
+app.delete('/blogs/:id', blogController.blog_delete)
 //single post
-app.get('/blogs/:id', (req, resp) => {
-  const id = req.params.id
-  Blog.findById(id)
-    .then(data => resp.render('details', {blog: data, title: 'blog details'}))
-    .catch(err => console.log(err))
-})
+app.get('/blogs/:id', blogController.blog_details)
 
 //404 (must be last route)
 app.use((req, resp) => resp.status(404).render('404', {title: '404'}))
