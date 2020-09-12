@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const Blog = require('./model/blog')
 
 //express app
 const app = express()
@@ -24,6 +25,20 @@ app.listen(3000)
 //middleware and static files
 app.use(express.static('public'))
 // app.use(morgan('dev'))
+
+//mongoose and mongo sandbox route
+app.get('/add-blog', (req, resp) => {
+  const blog = new Blog({
+    title: 'meren stack',
+    snippet: 'learn meren stack',
+    body:
+      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt facere at adipisci quam molestiae laborum magnam voluptatibus laudantium iste fugiat dicta id, non inventore eligendi qui! Facilis amet deleniti inventore vel repudiandae nulla porro aliquam, eum sunt aperiam, sed corrupti.',
+  })
+  blog
+    .save()
+    .then(result => resp.send(result))
+    .catch(err => console.log(err))
+})
 
 app.get('/', (req, resp) => {
   const blogs = [
